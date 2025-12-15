@@ -1,32 +1,46 @@
-body{
-  margin:0;/*browsers add default margin 8px to body ,so if we dont remove it navbar 
-  willnot touch screen edges,you will see unwanted white space*/
-  font-family:Arial,sans-serif;/*safe font stack*/
-  background:#f0f2f5
+/* Create post container */
+.create-post {
+  margin-bottom: 16px;
 }
-.navbar{
-  background:#1817f2;
-  color:white;
-  padding: 15px;
-  display:flex;
+
+/* Post card */
+.post-card {
+  border: 1px solid #ddd;
+  padding: 12px;
+  margin-top: 12px;
+}
+
+/* Post header */
+.post-header {
+  display: flex;
   justify-content: space-between;
 }
-.container{
-width: 500px;
-margin: 20px auto;
+
+/* Like button */
+.like-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  cursor: pointer;
 }
-.create-post,.post{
-  background: white;
-  padding: 15px;
-  border-radius: 5px;
-  margin-bottom:15px;
+
+/* Red heart */
+.liked-icon {
+  color: red;
 }
-textarea{
-  width:100%;
-  height:60px;
+
+/* Comment button */
+.comment-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
 }
-button{
-  margin-top:10px;
-  padding:5px 10px;
-  cursor:pointer;
+.comments p {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 4px 0;
 }
+
