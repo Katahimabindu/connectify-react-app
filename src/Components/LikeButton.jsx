@@ -1,24 +1,9 @@
-import { useState } from "react";
-import { FaHeart, FaRegHeart } from "react-icons/fa";
-
-function LikeButton() {
-  const [liked, setLiked] = useState(false);
-  const [likeCount, setLikeCount] = useState(0);
-
-  const handleLike = () => {
-    // Update like count based on current liked state
-    setLikeCount((prevCount) => (liked ? prevCount - 1 : prevCount + 1));
-
-    // Toggle liked state
-    setLiked(!liked);
-  };
-
+// Dumb component: receives props only
+function LikeButton({ liked, likes, onLike }) {
   return (
-    <button className="like-btn" onClick={handleLike}>
-      {liked ? <FaHeart className="liked-icon" /> : <FaRegHeart />}
-      <span className="like-text">
-        {likeCount} {likeCount === 1 ? "Like" : "Likes"}
-      </span>
+    <button onClick={onLike}>
+      {/* Show filled heart if liked, empty if not */}
+      {liked ? "❤️" : "🤍"} {likes}
     </button>
   );
 }

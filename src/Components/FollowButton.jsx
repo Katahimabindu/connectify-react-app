@@ -1,22 +1,9 @@
-// Import useState
-import { useState } from "react";
-
-// Import icons
-import { FaUserPlus, FaUserCheck } from "react-icons/fa";
-
-function FollowButton() {
-  // Track follow state
-  const [isFollowing, setIsFollowing] = useState(false);
-
+// Dumb component: receives props only
+function FollowButton({ following, onFollow }) {
   return (
-    // Toggle follow state on click
-    <button onClick={() => setIsFollowing(!isFollowing)}>
-      
-      {/* Icon changes based on state */}
-      {isFollowing ? <FaUserCheck /> : <FaUserPlus />}
-
-      {/* Text changes */}
-      {isFollowing ? " Following" : " Follow"}
+    <button onClick={onFollow}>
+      {/* Show 'Following' if following, 'Follow' otherwise */}
+      {following ? "Following" : "Follow"}
     </button>
   );
 }

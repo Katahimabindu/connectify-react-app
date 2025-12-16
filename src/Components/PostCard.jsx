@@ -1,26 +1,29 @@
-// Import child components
-import PostHeader from "./PostHeader";
 import LikeButton from "./LikeButton";
-import CommentToggle from "./CommentToggle";
+import FollowButton from "./FollowButton";
+import Comments from "./Comments";
 
-function PostCard() {
+function PostCard({ liked, likes, onLike, following, onFollow, showComments, toggleComments }) {
   return (
-    // One post container
-    <div className="post-card">
-      
-      {/* Post header: username + follow */}
-      <PostHeader />
+    <div>
+      {/* Post author */}
+      <h4>himabindu</h4>
 
       {/* Post content */}
-      <p className="post-content">
-        This is my first Connectify post 🚀
-      </p>
+      <p>Hello I'm Connectify</p>
 
-      {/* Post actions */}
-      <div className="post-actions">
-        <LikeButton />
-        <CommentToggle />
-      </div>
+      {/* Like button */}
+      <LikeButton liked={liked} likes={likes} onLike={onLike} />
+
+      {/* Follow button */}
+      <FollowButton following={following} onFollow={onFollow} />
+
+      {/* Toggle comments button */}
+      <button onClick={toggleComments}>
+        {showComments ? "Hide Comments" : "Show Comments"}
+      </button>
+
+      {/* Render Comments if showComments is true */}
+      {showComments && <Comments />}
     </div>
   );
 }
