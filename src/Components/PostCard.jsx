@@ -2,14 +2,24 @@ import LikeButton from "./LikeButton";
 import FollowButton from "./FollowButton";
 import Comments from "./Comments";
 
-function PostCard({ liked, likes, onLike, following, onFollow, showComments, toggleComments }) {
+function PostCard({
+  liked,
+  likes,
+  onLike,
+  following,
+  onFollow,
+  showComments,
+  toggleComments,
+  author,
+  content,
+}) {
   return (
-    <div>
+    <div className="post-card">
       {/* Post author */}
-      <h4>himabindu</h4>
+      <h4>{author}</h4>
 
       {/* Post content */}
-      <p>Hello I'm Connectify</p>
+      <p>{content}</p>
 
       {/* Like button */}
       <LikeButton liked={liked} likes={likes} onLike={onLike} />

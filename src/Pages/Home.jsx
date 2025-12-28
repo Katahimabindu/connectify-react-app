@@ -1,44 +1,82 @@
-import CreatePost from "./CreatePost";
-import PostCard from "./PostCard";
+import CreatePost from "../Components/CreatePost";
+import PostCard from "../Components/PostCard";
 import { useState } from "react";
 
 function Home() {
-  // State for LikeButton
-  const [liked, setLiked] = useState(false);
+  // Array of posts with individual states
+  const [posts, setPosts] = useState([
+    {
+      id: 1,
+      author: "Hima Bindu",
+      content: "Hello I'm Connectify",
+      liked: false,
+      likes: 0,
+      following: false,
+      showComments: false,
+    },
+    {
+      id: 2,
+      author: "John Doe",
+      content: "This is my first post",
+      liked: false,
+      likes: 0,
+      following: false,
+      showComments: false,
+    },
+  ]);
 
-  // State for number of likes
-  const [likes, setLikes] = useState(0);
+  // Handle Like button for specific post
+  const handleLike = (id) => {
+    setPosts((prevPosts) =>
+      prevPosts.map((post) =>
+        post.id === id
+          ? {
+              ...post,
+              liked: !post.liked,
+              likes: post.liked ? post.likes - 1 : post.likes + 1,
+            }
+          : post
+      )
+    );
+  };
 
-  // State for FollowButton
-  const [following, setFollowing] = useState(false);
+  // Handle Follow button for specific post
+  const handleFollow = (id) => {
+    setPosts((prevPosts) =>
+      prevPosts.map((post) =>
+        post.id === id ? { ...post, following: !post.following } : post
+      )
+    );
+  };
 
-  // State to show or hide comments
-  const [showComments, setShowComments] = useState(false);
-
-  // Function to handle Like button click
-  const handleLike = () => {
-    if (!liked) setLikes(likes + 1);
-    else setLikes(likes - 1);
-
-    setLiked(!liked); // toggle liked state
+  // Toggle comments for specific post
+  const toggleComments = (id) => {
+    setPosts((prevPosts) =>
+      prevPosts.map((post) =>
+        post.id === id ? { ...post, showComments: !post.showComments } : post
+      )
+    );
   };
 
   return (
     <>
-      {/* CreatePost component */}
       <CreatePost />
 
-      {/* PostCard component */}
-      {/* All state and handlers are passed as props */}
-      <PostCard
-        liked={liked}
-        likes={likes}
-        onLike={handleLike}
-        following={following}
-        onFollow={() => setFollowing(!following)}
-        showComments={showComments}
-        toggleComments={() => setShowComments(!showComments)}
-      />
+      {/* Render all posts using map */}
+      {posts.map((post) => (
+        <PostCard
+          key={post.id}
+          liked={post.liked}
+          likes={post.likes}
+          onLike={() => handleLike(post.id)}
+          following={post.following}
+          onFollow={() => handleFollow(post.id)}
+          showComments={post.showComments}
+          toggleComments={() => toggleComments(post.id)}
+          author={post.author}
+          content={post.content}
+        />
+      ))}
     </>
   );
 }
