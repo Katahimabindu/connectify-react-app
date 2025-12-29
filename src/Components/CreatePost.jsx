@@ -1,34 +1,22 @@
-// Import useState to manage input state
 import { useState } from "react";
 
-function CreatePost() {
-  // Stores text typed by user
-  const [postText, setPostText] = useState("");
+function CreatePost({ addPost }) {
+  const [content, setContent] = useState("");
 
-  // Runs when Post button is clicked
-  const handlePost = () => {
-    // Prevent empty or space-only posts
-    if (postText.trim() === "") return;
-
-    // Temporary action (Day 3 will add to posts array)
-    console.log("Post created:", postText);
-
-    // Clear input after posting
-    setPostText("");
+  const handleSubmit = () => {
+    if (!content.trim()) return; // prevent empty post
+    addPost(content);
+    setContent(""); // clear input
   };
 
   return (
-    // Container div used for styling
     <div className="create-post">
-      {/* Controlled textarea */}
       <textarea
         placeholder="What's on your mind?"
-        value={postText}
-        onChange={(e) => setPostText(e.target.value)}
+        value={content}
+        onChange={(e) => setContent(e.target.value)}
       />
-
-      {/* Post button */}
-      <button onClick={handlePost}>Post</button>
+      <button onClick={handleSubmit}>Post</button>
     </div>
   );
 }

@@ -1,71 +1,57 @@
 import { useState } from "react";
 
-function Post({ post }) {
-  // 1. State for Like count
-  const [likes, setLikes] = useState(0);
-
-  // 2. State for comments of this post
-  const [comments, setComments] = useState(post.comments || []);
-
-  // 3. State for new comment input
-  const [newComment, setNewComment] = useState("");
-
-  // 4. State to toggle comment section visibility
+function Post({ post, updatePost }) {
   const [showComments, setShowComments] = useState(false);
+  const [commentInput, setCommentInput] = useState("");
 
-  // Like button click handler
-  const handleLike = () => {
-    setLikes(likes + 1);
+  // Toggle like
+  const toggleLike = () => {
+    updatePost({ ...post, liked: !post.liked, likes: post.liked ? post.likes - 1 : post.likes + 1 });
   };
 
-  // Toggle comment section visibility
-  const handleToggleComments = () => {
-    setShowComments(!showComments);
+  // Add comment
+  const addComment = () => {
+    if (!commentInput.trim()) return;
+    const updatedPost = {
+      ...post,
+      comments: [...post.comments, { id: Date.now(), text: commentInput }],
+    };
+    updatePost(updatedPost);
+    setCommentInput("");
   };
 
-  // Add new comment
-  const handleAddComment = () => {
-    if (newComment.trim() === "") return; // Prevent empty comment
-    setComments([...comments, { id: Date.now(), text: newComment }]);
-    setNewComment(""); // Clear input after adding
-  };
-
-  // Delete a comment by id
-  const handleDeleteComment = (id) => {
-    setComments(comments.filter((comment) => comment.id !== id));
+  // Delete comment
+  const deleteComment = (id) => {
+    const updatedPost = {
+      ...post,
+      comments: post.comments.filter((c) => c.id !== id),
+    };
+    updatePost(updatedPost);
   };
 
   return (
-    <div className="post" style={{ border: "1px solid gray", padding: "10px", margin: "10px 0" }}>
-      <h4>{post.author}</h4>
+    <div className="post">
+      <h4>{post.name}</h4>
       <p>{post.content}</p>
-
-      <div className="post-actions" style={{ display: "flex", gap: "10px" }}>
-        <button onClick={handleLike}>Like ({likes})</button>
-        <button onClick={handleToggleComments}>
-          {showComments ? "Hide Comments" : "Comment"}
-        </button>
+      <div className="post-actions">
+        <button onClick={toggleLike}>{post.liked ? "❤️" : "Like"} ({post.likes})</button>
+        <button onClick={() => setShowComments(!showComments)}>Comment ({post.comments.length})</button>
       </div>
 
       {showComments && (
-        <div className="comments-section" style={{ marginTop: "10px" }}>
-          <div className="comment-list">
-            {comments.map((comment) => (
-              <div key={comment.id} style={{ display: "flex", gap: "10px", alignItems: "center" }}>
-                <p>{comment.text}</p>
-                <button onClick={() => handleDeleteComment(comment.id)}>Delete</button>
-              </div>
-            ))}
-          </div>
-
+        <div className="comments-section">
+          {post.comments.map((c) => (
+            <div key={c.id} className="comment">
+              {c.text} <button onClick={() => deleteComment(c.id)}>Delete</button>
+            </div>
+          ))}
           <input
             type="text"
-            value={newComment}
-            onChange={(e) => setNewComment(e.target.value)}
-            placeholder="Write a comment..."
-            style={{ marginRight: "5px" }}
+            value={commentInput}
+            onChange={(e) => setCommentInput(e.target.value)}
+            placeholder="Add a comment"
           />
-          <button onClick={handleAddComment}>Add Comment</button>
+          <button onClick={addComment}>Add</button>
         </div>
       )}
     </div>
