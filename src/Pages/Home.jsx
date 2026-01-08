@@ -1,46 +1,31 @@
-import { useState, useEffect } from "react";
 import Navbar from "../Components/Navbar";
 import CreatePost from "../Components/CreatePost";
+import Profile from "./Profile";
 import Post from "../Components/Post";
+import { useWebSocket } from "../Context/WebSocketContext";
 
 function Home() {
-  // Load posts from localStorage or empty array
-  const [posts, setPosts] = useState(() => {
-    const savedPosts = localStorage.getItem("posts");
-    return savedPosts ? JSON.parse(savedPosts) : [];
-  });
+  const { posts, topRef } = useWebSocket();
+  const currentUser = "Hima Bindu";
 
-  // Save posts to localStorage whenever posts change
-  useEffect(() => {
-    localStorage.setItem("posts", JSON.stringify(posts));
-  }, [posts]);
-
-  // Add new post
-  const addPost = (content) => {
-    const newPost = {
-      id: Date.now(),
-      name: "Hema Bindu",
-      content,
-      liked: false,
-      likes: 0,
-      comments: [],
-    };
-    setPosts([newPost, ...posts]);
-  };
-
-  // Update a post (like or add comment)
-  const updatePost = (updatedPost) => {
-    setPosts(posts.map((p) => (p.id === updatedPost.id ? updatedPost : p)));
-  };
+  const userPosts = posts.filter(p => p.name === currentUser);
+  const totalLikes = userPosts.reduce((sum, p) => sum + (p.likes || 0), 0);
+  const totalComments = userPosts.reduce((sum, p) => sum + (p.comments?.length || 0), 0);
 
   return (
     <>
       <Navbar />
-      <div className="container">
-        <CreatePost addPost={addPost} />
-        {posts.map((post) => (
-          <Post key={post.id} post={post} updatePost={updatePost} />
-        ))}
+      <div className="container p-4 max-w-md mx-auto">
+        <CreatePost />
+        <Profile user={currentUser} postCount={userPosts.length} totalLikes={totalLikes} totalComments={totalComments} />
+
+        <div ref={topRef}></div>
+
+        {userPosts.length === 0 ? (
+          <h3 className="text-center text-gray-500">No posts yet</h3>
+        ) : (
+          userPosts.map(post => <Post key={post.id} post={post} />)
+        )}
       </div>
     </>
   );

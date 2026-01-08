@@ -1,23 +1,29 @@
 import { useState } from "react";
+import { useWebSocket } from "../Context/WebSocketContext";
 
-function CreatePost({ addPost }) {
-  const [content, setContent] = useState("");
+function CreatePost() {
+  const { addPost } = useWebSocket();
+  const [input, setInput] = useState("");
 
-  const handleSubmit = () => {
-    if (!content.trim()) return; // prevent empty post
-    addPost(content);
-    setContent(""); // clear input
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!input.trim()) return;
+    addPost(input);
+    setInput("");
   };
 
   return (
-    <div className="create-post">
-      <textarea
-        placeholder="What's on your mind?"
-        value={content}
-        onChange={(e) => setContent(e.target.value)}
+    <form onSubmit={handleSubmit} className="flex gap-2 mb-4">
+      <input
+        value={input}
+        onChange={(e) => setInput(e.target.value)}
+        placeholder="Write a post..."
+        className="border px-2 py-1 rounded flex-1 text-sm"
       />
-      <button onClick={handleSubmit}>Post</button>
-    </div>
+      <button type="submit" className="bg-blue-600 text-white px-3 rounded text-sm">
+        Post
+      </button>
+    </form>
   );
 }
 

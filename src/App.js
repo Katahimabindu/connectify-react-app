@@ -1,12 +1,12 @@
-// App is the root entry point
-// It should stay minimal and clean
-
 import Home from "./Pages/Home";
+import { WebSocketProvider } from "./Context/WebSocketContext";
 
 function App() {
-  // Render Home page
-  return <Home />;
+  return (
+    <WebSocketProvider>
+      <Home />
+    </WebSocketProvider>
+  );
 }
 
 export default App;
-

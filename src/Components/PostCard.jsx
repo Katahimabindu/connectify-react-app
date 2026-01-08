@@ -1,39 +1,21 @@
 import LikeButton from "./LikeButton";
 import FollowButton from "./FollowButton";
-import Comments from "./Comments";
+import CommentToggle from "./CommentToggle";
 
-function PostCard({
-  liked,
-  likes,
-  onLike,
-  following,
-  onFollow,
-  showComments,
-  toggleComments,
-  author,
-  content,
-}) {
+function PostCard({ post, onLike }) {
   return (
-    <div className="post-card">
-      {/* Post author */}
-      <h4>{author}</h4>
+    <div className="border p-3 rounded shadow-sm my-3 bg-white">
+      <div className="flex justify-between items-center mb-1">
+        <h4 className="font-semibold">{post.name}</h4>
+        <FollowButton />
+      </div>
 
-      {/* Post content */}
-      <p>{content}</p>
+      <p className="text-sm">{post.content}</p>
 
-      {/* Like button */}
-      <LikeButton liked={liked} likes={likes} onLike={onLike} />
-
-      {/* Follow button */}
-      <FollowButton following={following} onFollow={onFollow} />
-
-      {/* Toggle comments button */}
-      <button onClick={toggleComments}>
-        {showComments ? "Hide Comments" : "Show Comments"}
-      </button>
-
-      {/* Render Comments if showComments is true */}
-      {showComments && <Comments />}
+      <div className="flex gap-2 mt-2 items-center">
+        <LikeButton liked={post.liked} likes={post.likes || 0} onLike={onLike} />
+        <CommentToggle comments={post.comments} />
+      </div>
     </div>
   );
 }

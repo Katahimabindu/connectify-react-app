@@ -1,41 +1,19 @@
-// Import useState for state management
 import { useState } from "react";
+import Comments from "./Comments";
 
-// Import icons from react-icons
-import { FaComment, FaThumbsUp, FaFire } from "react-icons/fa";
-
-function CommentToggle() {
-  // Controls whether comments are shown or hidden
+function CommentToggle({ comments }) {
   const [showComments, setShowComments] = useState(false);
 
   return (
-    <div className="comment-section">
-      
-      {/* Button to toggle comments */}
+    <div className="mt-2">
       <button
-        className="comment-btn"
         onClick={() => setShowComments(!showComments)}
+        className="px-2 py-1 text-xs border rounded"
       >
-        <FaComment />
-        {showComments ? " Hide Comments" : " View Comments"}
+        {showComments ? "Hide Comments" : `View Comments (${comments?.length || 0})`}
       </button>
 
-      {/* Show comments only when showComments is true */}
-      {showComments && (
-        <div className="comments">
-          
-          {/* Comment 1 */}
-          <p>
-            <FaThumbsUp /> Nice post
-          </p>
-
-          {/* Comment 2 */}
-          <p>
-            <FaFire /> Awesome
-          </p>
-
-        </div>
-      )}
+      {showComments && <Comments comments={comments} />}
     </div>
   );
 }
