@@ -1,0 +1,86 @@
+/* ===== Follow Bar ===== */
+.follow-bar {
+  background: white;
+  padding: 10px;
+  border-radius: 12px;
+  margin: 12px 0;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+.follow-bar h3 {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+/* Scroll container */
+.suggest-scroll {
+  display: flex;
+  overflow-x: auto; /* allow scroll on mobile if many users */
+  gap: 12px;
+  scroll-behavior: smooth;
+  padding-bottom: 6px;
+}
+
+/* Suggested user card */
+.suggest-card {
+  min-width: 110px;
+  background: #fff;
+  padding: 8px;
+  border-radius: 12px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  text-align: center;
+  flex-shrink: 0;
+}
+
+/* Suggested user name */
+.suggest-name {
+  font-size: 11px;
+  font-weight: bold;
+  display: block;
+  margin-bottom: 5px;
+}
+
+/* Follow button */
+.suggest-btn {
+  font-size: 10px;
+  padding: 4px 8px;
+  border: 1px solid #0095f6;
+  background: #0095f6;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+.suggest-btn:hover:not(:disabled) {
+  opacity: 0.8;
+}
+.suggest-btn:disabled {
+  background: #e0e0e0;
+  border-color: #ccc;
+  color: #666;
+  cursor: not-allowed;
+}
+
+/* ===== Mobile Responsive ===== */
+@media (max-width: 480px) {
+  .suggest-scroll {
+    gap: 8px;
+  }
+  .suggest-card {
+    min-width: 90px;
+    padding: 6px;
+  }
+  .suggest-name {
+    font-size: 10px;
+  }
+  .suggest-btn {
+    font-size: 9px;
+    padding: 3px 6px;
+  }
+}
+
+@media (max-width: 360px) {
+  .suggest-card {
+    min-width: 80px;
+  }
+}

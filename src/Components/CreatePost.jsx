@@ -13,16 +13,14 @@ function CreatePost() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex gap-2 mb-4">
+    <form onSubmit={handleSubmit} className="create-post">
       <input
+        type="text"
+        placeholder="What's on your mind?"
         value={input}
         onChange={(e) => setInput(e.target.value)}
-        placeholder="Write a post..."
-        className="border px-2 py-1 rounded flex-1 text-sm"
       />
-      <button type="submit" className="bg-blue-600 text-white px-3 rounded text-sm">
-        Post
-      </button>
+      <button type="submit">Post</button>
     </form>
   );
 }
