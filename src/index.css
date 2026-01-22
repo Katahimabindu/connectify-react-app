@@ -1,27 +1,49 @@
-/* Global resets */
+/* ===============================
+   GLOBAL
+================================ */
 body {
   margin: 0;
-  font-family: Arial, sans-serif;
-  background-color: #f2f2f5;
+  font-family: "Inter", Arial, sans-serif;
+  background: linear-gradient(to right, #f4f6f9, #eef2f7);
+  color: #1f2937;
 }
 
-/* Navbar */
+* {
+  box-sizing: border-box;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  border-radius: 20px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+/* ===============================
+   NAVBAR
+================================ */
 .navbar {
-  background-color: white;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-  padding: 16px;
+  background: white;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+  padding: 16px 24px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   position: sticky;
   top: 0;
   z-index: 50;
+  border-radius: 0 0 16px 16px;
 }
 
 .navbar h2 {
   color: #1877f2;
   margin: 0;
-  font-size: 18px;
+  font-size: 20px;
 }
 
 .navbar p {
@@ -34,50 +56,99 @@ body {
   color: #1877f2;
 }
 
-/* CreatePost */
+/* ===============================
+   3 COLUMN LAYOUT
+================================ */
+.page {
+  display: grid;
+  grid-template-columns: 1fr 600px 1fr;
+  gap: 24px;
+  max-width: 1200px;
+  margin: auto;
+  padding: 20px;
+  align-items: flex-start;
+}
+
+.center {
+  width: 100%;
+  max-width: 520px;
+  margin: 0 auto;
+}
+
+.left,
+.right {
+  position: sticky;
+  top: 100px;
+  height: fit-content;
+}
+
+.left .profile-card {
+  position: sticky;
+  top: 100px;
+}
+
+.right {
+  min-width: 280px;
+}
+
+/* ===============================
+   CARD BASE
+================================ */
+.card,
+.create-post,
+.post-card,
+.profile-card,
+.follow-bar {
+  background: white;
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.06);
+  margin-bottom: 16px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover,
+.post-card:hover,
+.profile-card:hover,
+.follow-bar:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+}
+
+/* ===============================
+   CREATE POST
+================================ */
 .create-post {
   display: flex;
-  gap: 8px;
-  margin-bottom: 16px;
+  gap: 10px;
 }
 
 .create-post input {
   flex: 1;
-  padding: 8px 12px;
-  border-radius: 50px;
-  border: 1px solid #ccc;
+  padding: 10px 14px;
+  border-radius: 20px;
+  border: 1px solid #d1d5db;
   outline: none;
+  font-size: 14px;
 }
 
 .create-post input:focus {
   border-color: #1877f2;
-  box-shadow: 0 0 0 2px rgba(24, 119, 242, 0.2);
+  box-shadow: 0 0 0 2px rgba(24,119,242,0.2);
 }
 
 .create-post button {
-  background-color: #1877f2;
+  background: #1877f2;
   color: white;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 50px;
-  cursor: pointer;
-  transition: background 0.3s;
+  padding: 8px 18px;
 }
 
-.create-post button:hover {
-  background-color: #155bb5;
-}
-
-/* Profile */
+/* ===============================
+   PROFILE CARD
+================================ */
 .profile-card {
-  background-color: white;
-  padding: 16px;
-  border-radius: 12px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-  margin-bottom: 16px;
   display: flex;
   justify-content: space-between;
-  align-items: center;
   text-align: center;
   flex-wrap: wrap;
 }
@@ -93,118 +164,188 @@ body {
 }
 
 .profile-card p {
-  margin: 4px 0 0 0;
-  color: #555;
+  margin: 4px 0 0;
   font-size: 12px;
+  color: #6b7280;
 }
 
-/* Post card */
+/* ===============================
+   POST
+================================ */
 .post-card {
-  background-color: white;
-  padding: 16px;
-  border-radius: 12px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-  margin-bottom: 16px;
-  transition: background 0.3s, transform 0.2s;
-}
-
-.post-card:hover {
-  transform: translateY(-2px);
+  transition: transform 0.2s ease;
+  border-radius: 16px;
 }
 
 .post-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  margin-bottom: 8px;
-  flex-wrap: wrap;
-}
-
-.post-header h4 {
-  margin: 0;
   font-size: 14px;
-  color: #333;
+  margin-bottom: 8px;
+  color: #4b5563;
 }
 
 .post-content {
-  color: #555;
+  font-size: 15px;
   margin-bottom: 12px;
+  color: #374151;
 }
 
-.post-buttons {
+/* ===============================
+   POST BUTTONS
+================================ */
+.post-buttons,
+.post-actions {
   display: flex;
   gap: 8px;
-  margin-bottom: 8px;
   flex-wrap: wrap;
 }
 
 .post-buttons button {
-  border: 1px solid #ccc;
-  padding: 6px 12px;
-  border-radius: 50px;
-  cursor: pointer;
-  font-size: 12px;
-  transition: all 0.3s;
+  background: #f3f4f6;
+  padding: 6px 14px;
+  font-size: 13px;
+  border-radius: 20px;
 }
 
 .post-buttons button:hover {
-  background-color: #f0f2f5;
+  background: #e5e7eb;
 }
 
-.post-buttons .like-button.liked {
-  background-color: #ff4d4d;
-  color: white;
-  border-color: #ff4d4d;
+.like-button.liked {
+  background: #ffe4e6;
+  color: #dc2626;
 }
 
-/* Comments */
-.comments {
-  margin-top: 8px;
+/* ===============================
+   COMMENTS
+================================ */
+.comments,
+.comments-section {
+  margin-top: 10px;
+  border-top: 1px solid #e5e7eb;
+  padding-top: 10px;
+}
+
+.comment {
   display: flex;
-  flex-direction: column;
-  gap: 6px;
+  justify-content: space-between;
+  align-items: center;
+  background: #f9fafb;
+  padding: 6px 12px;
+  border-radius: 12px;
+  font-size: 13px;
+  margin-bottom: 6px;
+}
+
+.comment button {
+  background: #ef4444;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 10px;
+}
+
+.comment button:hover {
+  background: #dc2626;
 }
 
 .comments input {
-  flex: 1;
-  padding: 6px 12px;
-  border-radius: 50px;
-  border: 1px solid #ccc;
+  width: 100%;
+  padding: 8px 12px;
+  border-radius: 20px;
+  border: 1px solid #d1d5db;
   outline: none;
-}
-
-.comments input:focus {
-  border-color: #1877f2;
-  box-shadow: 0 0 0 2px rgba(24, 119, 242, 0.2);
+  margin-bottom: 6px;
 }
 
 .comments button {
-  padding: 6px 12px;
-  border-radius: 50px;
-  border: none;
-  background-color: #1877f2;
+  background: #1877f2;
   color: white;
-  cursor: pointer;
+  padding: 6px 14px;
 }
 
-.comments button:hover {
-  background-color: #155bb5;
+/* ===============================
+   FOLLOW BAR
+================================ */
+.follow-bar h3 {
+  font-size: 14px;
+  margin-bottom: 8px;
 }
 
-/* Mobile responsive */
-@media screen and (max-width: 600px) {
+.suggest-scroll {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding-bottom: 6px;
+}
+
+.suggest-card {
+  min-width: 110px;
+  background: white;
+  padding: 10px;
+  border-radius: 14px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  text-align: center;
+  flex-shrink: 0;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.suggest-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(0,0,0,0.08);
+}
+
+.suggest-name {
+  font-size: 11px;
+  font-weight: bold;
+  margin-bottom: 6px;
+  display: block;
+}
+
+.suggest-btn {
+  background: #1877f2;
+  color: white;
+  font-size: 11px;
+  padding: 5px 10px;
+  border-radius: 12px;
+}
+
+.suggest-btn:disabled {
+  background: #e5e7eb;
+  color: #6b7280;
+  cursor: not-allowed;
+}
+
+/* ===============================
+   EMPTY STATE
+================================ */
+.empty {
+  text-align: center;
+  color: #6b7280;
+  padding: 20px;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+/* ===============================
+   MOBILE RESPONSIVE
+================================ */
+@media (max-width: 900px) {
+  .page {
+    grid-template-columns: 1fr;
+    padding: 16px;
+  }
+
+  .left,
+  .right {
+    display: none;
+  }
+}
+
+@media (max-width: 600px) {
   .navbar {
     flex-direction: column;
     gap: 8px;
-  }
-
-  .profile-card {
-    flex-direction: column;
-    text-align: center;
-  }
-
-  .post-buttons {
-    flex-direction: column;
   }
 
   .create-post {
@@ -215,27 +356,7 @@ body {
     width: 100%;
   }
 
-  .comments input {
-    width: 100%;
-    margin-bottom: 4px;
-  }
-
-  .follow-bar {
-    padding: 8px;
-  }
-
-  .following-list, .suggested-list {
-    flex-wrap: nowrap;
-    overflow-x: auto;
-  }
-
-  .suggest-chip button {
-    padding: 2px 4px;
-    font-size: 9px;
-  }
-
-  .follow-badge {
-    font-size: 10px;
-    padding: 4px 10px;
+  .post-buttons {
+    flex-direction: column;
   }
 }

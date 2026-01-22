@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { useWebSocket } from "../Context/WebSocketContext";
-import "../styles.css";
+import "../index.css";
 
 function FollowingBar() {
   const { following, followUser } = useWebSocket();

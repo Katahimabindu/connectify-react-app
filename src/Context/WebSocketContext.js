@@ -13,32 +13,34 @@ export function WebSocketProvider({ children }) {
     const ws = new WebSocket("ws://localhost:8080");
     wsRef.current = ws;
 
-    ws.onopen = () => {
-      console.log("Connected to WebSocket server");
-      toast.success("WebSocket connected!");
-    };
+    ws.onopen = () => toast.success("Connected");
 
     ws.onmessage = (event) => {
-      try {
-        const data = JSON.parse(event.data);
+      const data = JSON.parse(event.data);
 
-        if (data.type === "INIT_POSTS" || data.type === "UPDATE_POSTS") {
+      switch (data.type) {
+        case "INIT_POSTS":
+        case "UPDATE_POSTS":
           setPosts(data.posts || []);
-        }
+          break;
 
-        // ❗ REMOVE toast from here so it doesn't show twice
-        if (data.type === "NEW_POST") {
-          setPosts(prev => [data.post, ...prev]);
-          topRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-        }
+        case "NEW_POST":
+          setPosts(prev =>
+            prev.some(p => p.id === data.post.id)
+              ? prev
+              : [data.post, ...prev]
+          );
+          topRef.current?.scrollIntoView({ behavior: "smooth" });
+          break;
 
-      } catch (err) {
-        console.error("WebSocket message error", err);
+        case "DELETE_POST":
+          setPosts(prev => prev.filter(p => p.id !== data.id));
+          break;
+
+        default:
+          break;
       }
     };
-
-    ws.onerror = () => toast.error("WebSocket not connected ❌");
-    ws.onclose = () => console.log("WebSocket disconnected");
 
     return () => ws.close();
   }, []);
@@ -50,45 +52,24 @@ export function WebSocketProvider({ children }) {
   };
 
   const addPost = (content) => {
-    const newPost = {
-      id: Date.now(),
-      name: "Hima Bindu",
-      content,
-      likes: 0,
-      liked: false,
-      comments: [],
-    };
-
-    setPosts(prev => [newPost, ...prev]); 
-    sendEvent({ type: "NEW_POST", post: newPost });
-
-    // 🔥 Now only 1 toast appears from here
+    sendEvent({
+      type: "NEW_POST",
+      post: {
+        id: Date.now(),
+        name: "Hima Bindu",
+        content,
+        likes: 0,
+        liked: false,
+        comments: [],
+      },
+    });
     toast.success("Post added!");
-    topRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
-  const likePost = (id) => {
-    setPosts(prev =>
-      prev.map(p =>
-        p.id === id ? { ...p, likes: p.liked ? p.likes - 1 : p.likes + 1, liked: !p.liked } : p
-      )
-    );
-    sendEvent({ type: "LIKE_POST", id });
-  };
-
-  const addComment = (id, name, content) => {
-    setPosts(prev =>
-      prev.map(p =>
-        p.id === id ? { ...p, comments: [...p.comments, { id: Date.now(), name, content }] } : p
-      )
-    );
+  const likePost = (id) => sendEvent({ type: "LIKE_POST", id });
+  const addComment = (id, name, content) =>
     sendEvent({ type: "ADD_COMMENT", id, name, content });
-  };
-
-  const deletePost = (id) => {
-    setPosts(prev => prev.filter(p => p.id !== id));
-    sendEvent({ type: "DELETE_POST", id });
-  };
+  const deletePost = (id) => sendEvent({ type: "DELETE_POST", id });
 
   const followUser = (user) => {
     setFollowing(prev => prev.includes(user) ? prev : [...prev, user]);
@@ -96,20 +77,20 @@ export function WebSocketProvider({ children }) {
   };
 
   return (
-    <WebSocketContext.Provider value={{
-      posts,
-      addPost,
-      likePost,
-      addComment,
-      deletePost,
-      followUser,
-      sendEvent,
-      topRef,
-      following,
-    }}>
-      <div ref={topRef}></div>
+    <WebSocketContext.Provider
+      value={{
+        posts,
+        addPost,
+        likePost,
+        addComment,
+        deletePost,
+        followUser,
+        following,
+        topRef
+      }}
+    >
       {children}
-      <Toaster position="top-center" reverseOrder={false} />
+      <Toaster position="top-center" />
     </WebSocketContext.Provider>
   );
 }
