@@ -2,52 +2,56 @@ import { useState } from "react";
 import { useWebSocket } from "../Context/WebSocketContext";
 
 function Post({ post }) {
-  const { likePost, addComment, deletePost } = useWebSocket();
-  const [showComments, setShowComments] = useState(false);
-  const [commentInput, setCommentInput] = useState("");
+  const { likePost, addComment, deletePost, userId } = useWebSocket();
+  const [show, setShow] = useState(false);
+  const [input, setInput] = useState("");
+
+  const liked = post.likes.includes(userId);
+  const trendingScore = post.likes.length + post.comments.length;
+
+  const submit = () => {
+    if (!input.trim()) return;
+    addComment(post.id, "Hima Bindu", input);
+    setInput("");
+  };
 
   return (
     <div className="post-card">
       <div className="post-header">
         <h4>{post.name}</h4>
-        <div>
-          <button
-            onClick={() => deletePost(post.id)}
-            style={{ marginLeft: "8px" }}
-          >
-            Delete
-          </button>
-        </div>
+        {trendingScore >= 3 && <span className="trending">🔥 Trending</span>}
+        <button onClick={() => deletePost(post.id)}>Delete</button>
       </div>
+
       <div className="post-content">{post.content}</div>
+
       <div className="post-buttons">
         <button
           onClick={() => likePost(post.id)}
-          className={`like-button ${post.liked ? "liked" : ""}`}
+          className={liked ? "like-button liked" : "like-button"}
         >
-          ❤️ {post.likes || 0}
+          ❤️ {post.likes.length}
         </button>
-        <button onClick={() => setShowComments(!showComments)}>
-          {showComments ? "Hide Comments" : `Comments (${post.comments?.length || 0})`}
+
+        <button onClick={() => setShow(!show)}>
+          💬 Comments ({post.comments.length})
         </button>
       </div>
-      {showComments && (
+
+      {show && (
         <div className="comments">
-          {post.comments?.map(c => (
-            <p key={c.id}>{c.name}: {c.content}</p>
+          {post.comments.map(c => (
+            <div key={c.id} className="comment">
+              <b>{c.name}</b>: {c.content}
+            </div>
           ))}
-          <div style={{ display: "flex", marginTop: "8px" }}>
-            <input
-              type="text"
-              placeholder="Add comment..."
-              value={commentInput}
-              onChange={(e) => setCommentInput(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && addComment(post.id, "Hima Bindu", commentInput) && setCommentInput("")}
-            />
-            <button onClick={() => { addComment(post.id, "Hima Bindu", commentInput); setCommentInput(""); }}>
-              Add
-            </button>
-          </div>
+          <input
+            value={input}
+            onChange={e => setInput(e.target.value)}
+            placeholder="Add comment..."
+            onKeyDown={e => e.key === "Enter" && submit()}
+          />
+          <button onClick={submit}>Add</button>
         </div>
       )}
     </div>

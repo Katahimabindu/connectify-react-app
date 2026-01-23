@@ -5,7 +5,7 @@ import ReactDOM from "react-dom/client";
 import { WebSocketProvider } from "./Context/WebSocketContext";
 import Home from "./Pages/Home";
 import { Toaster } from "react-hot-toast";
-import "./index.css"; // your tailwind or global styles
+import "./index.css"; 
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
