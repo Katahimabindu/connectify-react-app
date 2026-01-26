@@ -8,7 +8,7 @@ app.use(express.json());
 
 let posts = [];
 
-const server = app.listen(5000, () => {
+app.listen(5000, () => {
   console.log("HTTP running on 5000");
 });
 

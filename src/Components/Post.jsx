@@ -1,59 +1,57 @@
 import { useState } from "react";
-import { useWebSocket } from "../Context/WebSocketContext";
+import CommentToggle from "./CommentToggle";
+import PostHeader from "./PostHeader";
 
-function Post({ post }) {
-  const { likePost, addComment, deletePost, userId } = useWebSocket();
-  const [show, setShow] = useState(false);
-  const [input, setInput] = useState("");
+function Post({ post, onLike, onDelete, onAddComment }) {
+  const [commentText, setCommentText] = useState("");
 
-  const liked = post.likes.includes(userId);
-  const trendingScore = post.likes.length + post.comments.length;
-
-  const submit = () => {
-    if (!input.trim()) return;
-    addComment(post.id, "Hima Bindu", input);
-    setInput("");
+  const handleAddComment = () => {
+    if (!commentText.trim()) return;
+    onAddComment(post.id, commentText);
+    setCommentText("");
   };
+  console.log("POST DATA:", post);
+console.log("IS TRENDING?", post.likes.length >= 5);
+
 
   return (
-    <div className="post-card">
-      <div className="post-header">
-        <h4>{post.name}</h4>
-        {trendingScore >= 3 && <span className="trending">🔥 Trending</span>}
-        <button onClick={() => deletePost(post.id)}>Delete</button>
-      </div>
+    <div className="post">
+      {/* HEADER (username + follow + trending badge) */}
+      <PostHeader post={post} />
 
-      <div className="post-content">{post.content}</div>
+      {/* POST CONTENT */}
+      <p style={{ marginBottom: "8px" }}>{post.text}</p>
 
-      <div className="post-buttons">
-        <button
-          onClick={() => likePost(post.id)}
-          className={liked ? "like-button liked" : "like-button"}
-        >
-          ❤️ {post.likes.length}
+      {/* ACTIONS */}
+      <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
+        <button onClick={() => onLike(post.id)}>
+          ❤️ {post.likes?.length || 0}
         </button>
 
-        <button onClick={() => setShow(!show)}>
-          💬 Comments ({post.comments.length})
-        </button>
+        <span>💬 {post.comments?.length || 0}</span>
       </div>
 
-      {show && (
-        <div className="comments">
-          {post.comments.map(c => (
-            <div key={c.id} className="comment">
-              <b>{c.name}</b>: {c.content}
-            </div>
-          ))}
-          <input
-            value={input}
-            onChange={e => setInput(e.target.value)}
-            placeholder="Add comment..."
-            onKeyDown={e => e.key === "Enter" && submit()}
-          />
-          <button onClick={submit}>Add</button>
-        </div>
-      )}
+      {/* COMMENTS TOGGLE */}
+      <CommentToggle comments={post.comments} />
+
+      {/* ADD COMMENT */}
+      <div style={{ display: "flex", gap: "8px", marginTop: "8px" }}>
+        <input
+          type="text"
+          value={commentText}
+          placeholder="Add comment..."
+          onChange={(e) => setCommentText(e.target.value)}
+        />
+        <button onClick={handleAddComment}>Add</button>
+      </div>
+
+      {/* DELETE */}
+      <button
+        onClick={() => onDelete(post.id)}
+        style={{ marginTop: "8px", color: "red" }}
+      >
+        Delete
+      </button>
     </div>
   );
 }

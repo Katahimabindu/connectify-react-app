@@ -10,9 +10,7 @@ export function WebSocketProvider({ children }) {
   const wsRef = useRef(null);
   const topRef = useRef(null);
 
-  const userId = useRef(
-    localStorage.getItem("uid") || crypto.randomUUID()
-  );
+  const userId = useRef(localStorage.getItem("uid") || crypto.randomUUID());
 
   useEffect(() => {
     localStorage.setItem("uid", userId.current);
@@ -26,8 +24,15 @@ export function WebSocketProvider({ children }) {
       const data = JSON.parse(e.data);
 
       if (data.type === "INIT_POSTS") setPosts(data.posts);
-      if (data.type === "NEW_POST") setPosts(p => [data.post, ...p]);
-      if (data.type === "UPDATE_POSTS") setPosts(data.posts);
+
+      if (data.type === "NEW_POST") {
+        setPosts(p => [data.post, ...p]);
+        toast.success("Post added");
+      }
+
+      if (data.type === "UPDATE_POSTS") {
+        setPosts(data.posts);
+      }
     };
 
     return () => ws.close();
@@ -39,56 +44,31 @@ export function WebSocketProvider({ children }) {
     }
   };
 
-  const addPost = (content) => {
-    sendEvent({
-      type: "NEW_POST",
-      name: "Hima Bindu",
-      content
-    });
-  };
-
-  const likePost = (id) => {
-    sendEvent({
-      type: "LIKE_POST",
-      id,
-      userId: userId.current
-    });
-  };
-
-  const addComment = (postId, name, content) => {
-    sendEvent({
-      type: "ADD_COMMENT",
-      postId,
-      name,
-      content
-    });
-  };
-
-  const deletePost = (id) => {
-    sendEvent({ type: "DELETE_POST", id });
-  };
-
-  const followUser = (user) => {
-    setFollowing(p => p.includes(user) ? p : [...p, user]);
-  };
-
   return (
-    <WebSocketContext.Provider value={{
-      posts,
-      addPost,
-      likePost,
-      addComment,
-      deletePost,
-      followUser,
-      following,
-      topRef,
-      userId: userId.current
-    }}>
+    <WebSocketContext.Provider
+      value={{
+        posts,
+        topRef,
+        following,
+        addPost: (content) =>
+          sendEvent({ type: "NEW_POST", name: "Hima Bindu", content }),
+
+        likePost: (id) =>
+          sendEvent({ type: "LIKE_POST", id, userId: userId.current }),
+
+        addComment: (postId, name, content) =>
+          sendEvent({ type: "ADD_COMMENT", postId, name, content }),
+
+        deletePost: (id) =>
+          sendEvent({ type: "DELETE_POST", id }),
+
+        followUser: (u) =>
+          setFollowing(p => (p.includes(u) ? p : [...p, u]))
+      }}
+    >
       {children}
     </WebSocketContext.Provider>
   );
 }
 
-export function useWebSocket() {
-  return useContext(WebSocketContext);
-}
+export const useWebSocket = () => useContext(WebSocketContext);
