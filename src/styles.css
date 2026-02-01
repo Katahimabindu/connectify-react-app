@@ -1,0 +1,100 @@
+/* ===== Follow Bar ===== */
+.follow-bar {
+  background: white;
+  padding: 12px;
+  border-radius: 14px;
+  margin: 12px 0;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  overflow-x: hidden;
+}
+
+.follow-bar h3 {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+/* Scroll container */
+.suggest-scroll {
+  display: flex;
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space:nowrap;
+  gap: 14px;
+  /* scroll-behavior: smooth; */
+  /* scrollbar-width:thin; */
+  padding-bottom: 10px;
+  max-width:100%;
+  flex-wrap: nowrap;
+  padding:8px 4px 12px;
+}
+/* .suggest-scrol::-webkit-scrollbar{ */
+  /* height:6px; */
+/* } */
+/* .suggest-scrol::-webkit-scrollbar-thumb{ */
+  /* background:#ccc; */
+  /* border-radius:10px; */
+/* } */
+
+/* Suggested user card */
+.suggest-card {
+  min-width: 140px;
+  background: #fff;
+  padding: 12px 10px;
+  border-radius: 16px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  text-align: center;
+  display:flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  transition:transform 0.2s;
+  gap:6px;
+}
+
+.suggest-card:hover{
+  transform:translateY(-3PX);
+}
+/* Suggested user name */
+.suggest-name {
+  font-size: 11px;
+  font-weight: 600;
+  /* display: block; */
+  /* margin-bottom: 6px; */
+}
+
+/* Follow button */
+.suggest-btn {
+  font-size: 10px;
+  padding: 4px 8px;
+  border: none;
+  background: #1877f2;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.suggest-btn:hover:not(:disabled) {
+  opacity: 0.85;
+}
+
+.suggest-btn:disabled {
+  background: #e4e6eb;
+  color: #555;
+  cursor: not-allowed;
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+  .suggest-card {
+    min-width: 95px;
+    padding: 8px;
+  }
+  .suggest-name {
+    font-size: 12px;
+    font-weight: 600;
+    display:block;
+    margin-bottom: 8px;
+    color:#333
+  }
+}

@@ -1,16 +1,15 @@
 import React from "react";
-import "./index.css";
-
 import ReactDOM from "react-dom/client";
 import { WebSocketProvider } from "./Context/WebSocketContext";
-import Home from "./Pages/Home";
+import App from "./App";
 import { Toaster } from "react-hot-toast";
-import "./index.css"; 
+import "./styles.css";
+import "./index.css";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <WebSocketProvider>
-    <Home />
+    <App />
     <Toaster position="top-center" />
   </WebSocketProvider>
 );

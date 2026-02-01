@@ -1,18 +1,16 @@
-import React from "react";
+// Import Follow button
+import FollowButton from "./FollowButton";
 
-function PostHeader({ post }) {
-  // Decide trending purely based on comments length
-  const isTrending = post.comments.length >= 5;
-console.log("Post comments length:", post.comments.length, "Trending?", post.comments.length >= 5);
-
+function PostHeader() {
   return (
+    // Header section of post
     <div className="post-header">
-      <span className="username">{post.name}</span>
+      
+      {/* Username */}
+      <span className="username">hima_bindhu</span>
 
-      {/* Only show badge if trending */}
-      {isTrending && (
-        <span className="trending-badge">🔥 Trending</span>
-      )}
+      {/* Follow / Unfollow button */}
+      <FollowButton />
     </div>
   );
 }

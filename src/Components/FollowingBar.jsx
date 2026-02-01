@@ -1,10 +1,10 @@
 import React, { useEffect, useRef } from "react";
 import { useWebSocket } from "../Context/WebSocketContext";
-import "../index.css";
+import "../styles.css";
 
 function FollowingBar() {
-  // ✅ SAFETY DEFAULT (prevents crash)
   const { following = [], followUser } = useWebSocket();
+  const scrollRef = useRef(null);
 
   const suggestedUsers = [
     "Virat Kohli",
@@ -16,65 +16,46 @@ function FollowingBar() {
     "Narayana Murthy",
   ];
 
-  const scrollRef = useRef(null);
-  const intervalRef = useRef(null);
-
-  // ===============================
-  // Auto-scroll suggested users
-  // ===============================
+  // ✅ AUTO SCROLL (FIXED)
   useEffect(() => {
-    const scrollContainer = scrollRef.current;
-    if (!scrollContainer) return;
+    const container = scrollRef.current;
+    if (!container) return;
 
-    let scrollPos = 0;
-    const getScrollSpeed = () => (window.innerWidth < 480 ? 0.5 : 1);
+    let scrollAmount = 0;
 
-    const startScroll = () => {
-      intervalRef.current = setInterval(() => {
-        const maxScroll =
-          scrollContainer.scrollWidth - scrollContainer.clientWidth;
+    const interval = setInterval(() => {
+      scrollAmount += 1;
+      container.scrollLeft = scrollAmount;
 
-        scrollPos += getScrollSpeed();
-        if (scrollPos >= maxScroll) scrollPos = 0;
+      if (
+        container.scrollLeft + container.clientWidth >=
+        container.scrollWidth
+      ) {
+        scrollAmount = 0;
+      }
+    }, 30); // speed (lower = faster)
 
-        scrollContainer.scrollTo({
-          left: scrollPos,
-          behavior: "smooth",
-        });
-      }, 50);
-    };
-
-    startScroll();
-
-    const stopScroll = () => clearInterval(intervalRef.current);
-
-    scrollContainer.addEventListener("mouseenter", stopScroll);
-    scrollContainer.addEventListener("mouseleave", startScroll);
-
-    return () => {
-      stopScroll();
-      scrollContainer.removeEventListener("mouseenter", stopScroll);
-      scrollContainer.removeEventListener("mouseleave", startScroll);
-    };
+    return () => clearInterval(interval);
   }, []);
+
+  useEffect(() => {
+    console.log("👥 Following list:", following);
+  }, [following]);
 
   return (
     <div>
-      {/* ===============================
-          FOLLOWING USERS
-      =============================== */}
+      {/* FOLLOWING */}
       <div className="follow-bar">
-        <h3>Following ({following.length})</h3>
-
+        <h3>Following</h3>
         <div className="suggest-scroll">
           {following.length === 0 ? (
-            <span style={{ fontSize: "12px", color: "#888" }}>
+            <span className="empty-text">
               You are not following anyone yet
             </span>
           ) : (
-            following.map((user) => (
-              <div key={user} className="suggest-card">
-                <span className="suggest-name">{user}</span>
+            following.map((u) => (
+              <div key={u} className="suggest-card">
+                <span className="suggest-name">{u}</span>
                 <button className="suggest-btn" disabled>
                   ✓ Following
                 </button>
@@ -84,29 +65,22 @@ function FollowingBar() {
         </div>
       </div>
 
-      {/* ===============================
-          SUGGESTED USERS
-      =============================== */}
-      <div className="follow-bar" style={{ marginTop: "12px" }}>
+      {/* SUGGESTED USERS */}
+      <div className="follow-bar">
         <h3>Suggested Users</h3>
-
-        <div className="suggest-scroll" ref={scrollRef}>
-          {suggestedUsers.map((user) => {
-            const isFollowing = following.includes(user);
-
-            return (
-              <div key={user} className="suggest-card">
-                <span className="suggest-name">{user}</span>
-                <button
-                  onClick={() => followUser(user)}
-                  className="suggest-btn"
-                  disabled={isFollowing}
-                >
-                  {isFollowing ? "✓ Following" : "Follow"}
-                </button>
-              </div>
-            );
-          })}
+        <div className="suggest-scroll auto-scroll" ref={scrollRef}>
+          {[...suggestedUsers,...suggestedUsers].map((u,i) => (
+            <div key={u+i} className="suggest-card">
+              <span className="suggest-name">{u}</span>
+              <button
+                className="suggest-btn"
+                onClick={() => followUser(u)}
+                disabled={following.includes(u)}
+              >
+                {following.includes(u) ? "✓ Following" : "Follow"}
+              </button>
+            </div>
+          ))}
         </div>
       </div>
     </div>

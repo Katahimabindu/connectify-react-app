@@ -1,23 +1,21 @@
-import PostHeader from "./PostHeader";
+import LikeButton from "./LikeButton";
+import FollowButton from "./FollowButton";
 import CommentToggle from "./CommentToggle";
-import { useWebSocket } from "../Context/WebSocketContext";
 
-function PostCard({ post }) {
-  const { send } = useWebSocket();
-
-  const likePost = () => {
-    send({ type: "LIKE_POST", id: post.id });
-  };
-
+function PostCard({ post, onLike }) {
   return (
-    <div className="post">
-      <PostHeader post={post} />
+    <div className="border p-3 rounded shadow-sm my-3 bg-white">
+      <div className="flex justify-between items-center mb-1">
+        <h4 className="font-semibold">{post.name}</h4>
+        <FollowButton />
+      </div>
 
-      <p>{post.content}</p>
+      <p className="text-sm">{post.content}</p>
 
-      <button onClick={likePost}>❤️ {post.likes.length}</button>
-
-      <CommentToggle comments={post.comments} postId={post.id} />
+      <div className="flex gap-2 mt-2 items-center">
+        <LikeButton liked={post.liked} likes={post.likes || 0} onLike={onLike} />
+        <CommentToggle comments={post.comments} />
+      </div>
     </div>
   );
 }

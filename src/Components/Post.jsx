@@ -1,57 +1,38 @@
 import { useState } from "react";
-import CommentToggle from "./CommentToggle";
-import PostHeader from "./PostHeader";
+import { useWebSocket } from "../Context/WebSocketContext";
 
-function Post({ post, onLike, onDelete, onAddComment }) {
-  const [commentText, setCommentText] = useState("");
-
-  const handleAddComment = () => {
-    if (!commentText.trim()) return;
-    onAddComment(post.id, commentText);
-    setCommentText("");
-  };
-  console.log("POST DATA:", post);
-console.log("IS TRENDING?", post.likes.length >= 5);
-
+function Post({ post }) {
+  const { likePost, addComment, deletePost } = useWebSocket();
+  const [text, setText] = useState("");
 
   return (
-    <div className="post">
-      {/* HEADER (username + follow + trending badge) */}
-      <PostHeader post={post} />
+    <div className="post-card">
+      <h4>{post.name}</h4>
+      <p>{post.content}</p>
 
-      {/* POST CONTENT */}
-      <p style={{ marginBottom: "8px" }}>{post.text}</p>
+      <button onClick={() => likePost(post.id)}>❤️ {post.likes || 0}</button>
+      <button onClick={() => deletePost(post.id)}>Delete</button>
 
-      {/* ACTIONS */}
-      <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
-        <button onClick={() => onLike(post.id)}>
-          ❤️ {post.likes?.length || 0}
-        </button>
-
-        <span>💬 {post.comments?.length || 0}</span>
-      </div>
-
-      {/* COMMENTS TOGGLE */}
-      <CommentToggle comments={post.comments} />
-
-      {/* ADD COMMENT */}
-      <div style={{ display: "flex", gap: "8px", marginTop: "8px" }}>
+      <div>
+        {post.comments?.map((c) => (
+          <p key={c.id}>
+            {c.name}: {c.content}
+          </p>
+        ))}
         <input
-          type="text"
-          value={commentText}
-          placeholder="Add comment..."
-          onChange={(e) => setCommentText(e.target.value)}
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          placeholder="Comment..."
         />
-        <button onClick={handleAddComment}>Add</button>
+        <button
+          onClick={() => {
+            addComment(post.id, "Hima Bindu", text);
+            setText("");
+          }}
+        >
+          Add
+        </button>
       </div>
-
-      {/* DELETE */}
-      <button
-        onClick={() => onDelete(post.id)}
-        style={{ marginTop: "8px", color: "red" }}
-      >
-        Delete
-      </button>
     </div>
   );
 }
