@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useWebSocket } from "../Context/WebSocketContext";
 import "../styles.css";
 
@@ -16,40 +16,29 @@ function FollowingBar() {
     "Narayana Murthy",
   ];
 
-  // ✅ AUTO SCROLL (FIXED)
   useEffect(() => {
-    const container = scrollRef.current;
-    if (!container) return;
+    const el = scrollRef.current;
+    if (!el) return;
 
-    let scrollAmount = 0;
-
-    const interval = setInterval(() => {
-      scrollAmount += 1;
-      container.scrollLeft = scrollAmount;
-
-      if (
-        container.scrollLeft + container.clientWidth >=
-        container.scrollWidth
-      ) {
-        scrollAmount = 0;
+    let x = 0;
+    const id = setInterval(() => {
+      x += 1;
+      el.scrollLeft = x;
+      if (el.scrollLeft + el.clientWidth >= el.scrollWidth) {
+        x = 0;
       }
-    }, 30); // speed (lower = faster)
+    }, 25);
 
-    return () => clearInterval(interval);
+    return () => clearInterval(id);
   }, []);
-
-  useEffect(() => {
-    console.log("👥 Following list:", following);
-  }, [following]);
 
   return (
     <div>
-      {/* FOLLOWING */}
       <div className="follow-bar">
         <h3>Following</h3>
         <div className="suggest-scroll">
           {following.length === 0 ? (
-            <span className="empty-text">
+            <span style={{ fontSize: 12, color: "#888" }}>
               You are not following anyone yet
             </span>
           ) : (
@@ -65,12 +54,11 @@ function FollowingBar() {
         </div>
       </div>
 
-      {/* SUGGESTED USERS */}
       <div className="follow-bar">
         <h3>Suggested Users</h3>
-        <div className="suggest-scroll auto-scroll" ref={scrollRef}>
-          {[...suggestedUsers,...suggestedUsers].map((u,i) => (
-            <div key={u+i} className="suggest-card">
+        <div className="suggest-scroll" ref={scrollRef}>
+          {suggestedUsers.map((u) => (
+            <div key={u} className="suggest-card">
               <span className="suggest-name">{u}</span>
               <button
                 className="suggest-btn"

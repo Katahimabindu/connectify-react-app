@@ -1,37 +1,49 @@
 import { useState } from "react";
 import { useWebSocket } from "../Context/WebSocketContext";
+import LikeButton from "./LikeButton";
 
 function Post({ post }) {
   const { likePost, addComment, deletePost } = useWebSocket();
-  const [text, setText] = useState("");
+  const [comment, setComment] = useState("");
+
+  const handleComment = () => {
+    if (!comment.trim()) return;
+    addComment(post.id, comment);
+    setComment("");
+  };
 
   return (
     <div className="post-card">
-      <h4>{post.name}</h4>
-      <p>{post.content}</p>
+      <div className="post-header">
+        <h4>{post.name}</h4>
+        <button onClick={() => deletePost(post.id)}>🗑</button>
+      </div>
 
-      <button onClick={() => likePost(post.id)}>❤️ {post.likes || 0}</button>
-      <button onClick={() => deletePost(post.id)}>Delete</button>
+      <p className="post-content">{post.content}</p>
 
-      <div>
-        {post.comments?.map((c) => (
-          <p key={c.id}>
-            {c.name}: {c.content}
-          </p>
-        ))}
-        <input
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          placeholder="Comment..."
+      <div className="post-buttons">
+        <LikeButton
+          liked={post.liked}
+          likes={post.likes}
+          onLike={() => likePost(post.id)}
         />
-        <button
-          onClick={() => {
-            addComment(post.id, "Hima Bindu", text);
-            setText("");
-          }}
-        >
-          Add
-        </button>
+      </div>
+
+      {/* Comments */}
+      <div className="comments">
+        {post.comments.map((c) => (
+          <div key={c.id} className="comment">
+            <strong>{c.name}:</strong> {c.content}
+          </div>
+        ))}
+
+        <input
+          type="text"
+          placeholder="Write a comment..."
+          value={comment}
+          onChange={(e) => setComment(e.target.value)}
+        />
+        <button onClick={handleComment}>Comment</button>
       </div>
     </div>
   );

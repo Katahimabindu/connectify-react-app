@@ -39,6 +39,7 @@ wss.on("connection", (ws) => {
   ws.send(JSON.stringify({ type: "FOLLOW_UPDATE", following }));
 
   ws.on("message", (msg) => {
+    console.log("RAW MESSAGE:",msg.toString());
     const data = JSON.parse(msg);
     console.log("📩 received:", data);
 
@@ -48,17 +49,47 @@ wss.on("connection", (ws) => {
           ...data.post,
           likes: 0,
           comments: [],
+          likedBy:[],
         });
         broadcast({ type: "UPDATE_POSTS", posts });
         break;
 
-      case "LIKE_POST":
-        posts = posts.map((p) => p.id === data.id
-            ? { ...p, likes: (p.likes || 0) + 1 }
-            : p
-        );
-        broadcast({ type: "UPDATE_POSTS", posts });
-        break;
+      // case "LIKE_POST":
+      //   posts = posts.map((p) => p.id === data.id
+      //       ? { ...p, likes: (p.likes || 0) + 1 }
+      //       : p
+      //   );
+      //   broadcast({ type: "UPDATE_POSTS", posts });
+      //   break;
+
+      case "LIKE_POST": {
+  const { id, user } = data;
+
+  posts = posts.map((p) => {
+    if (p.id !== id) return p;
+
+    const likedBy = p.likedBy || [];
+
+    if (likedBy.includes(user)) {
+      // UNLIKE
+      return {
+        ...p,
+        likes: Math.max((p.likes || 1) - 1, 0),
+        likedBy: likedBy.filter((u) => u !== user),
+      };
+    } else {
+      // LIKE
+      return {
+        ...p,
+        likes: (p.likes || 0) + 1,
+        likedBy: [...likedBy, user],
+      };
+    }
+  });
+
+  broadcast({ type: "UPDATE_POSTS", posts });
+  break;
+}
 
       case "ADD_COMMENT":
         posts = posts.map((p) =>
