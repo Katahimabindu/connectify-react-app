@@ -1,0 +1,193 @@
+/* =======================
+   GLOBAL
+======================= */
+body {
+  margin: 0;
+  font-family: "Inter", Arial, sans-serif;
+  background: #f0f2f5;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* =======================
+   NAVBAR
+======================= */
+.navbar {
+  background: white;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  padding: 14px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.navbar h2 {
+  color: #1877f2;
+  margin: 0;
+  font-size: 18px;
+}
+
+.navbar p {
+  cursor: pointer;
+  color: #555;
+  font-size: 14px;
+}
+
+/* =======================
+   CREATE POST
+======================= */
+.create-post {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.create-post input {
+  flex: 1;
+  padding: 10px 16px;
+  border-radius: 20px;
+  border: 1px solid #ccc;
+  outline: none;
+}
+
+.create-post button {
+  background: #1877f2;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 20px;
+  cursor: pointer;
+}
+
+/* =======================
+   PROFILE CARD
+======================= */
+.profile-card {
+  background: white;
+  padding: 16px;
+  border-radius: 14px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  margin-bottom: 16px;
+  display: flex;
+  justify-content: space-between;
+  text-align: center;
+}
+
+.profile-card h3 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.profile-card p {
+  margin: 4px 0 0;
+  font-size: 12px;
+  color: #555;
+}
+
+/* =======================
+   POST CARD
+======================= */
+.post-card {
+  background: white;
+  padding: 18px;
+  border-radius: 16px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+  margin-bottom: 16px;
+  transition:transform 0.2s,box-shadow 0.2s;
+  
+}
+.post-card:hover{
+  transform:translateY(-4px);
+  box-shadow:0 10px 24px rgba(0,0,0,0.12)
+}
+
+.post-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+.post-header h4{
+  margin:0;font-size:15px;
+  font-weight:600;
+  color:#111;
+}
+
+.post-content {
+  font-size: 14px;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.post-buttons {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.post-buttons button {
+  border: none;
+  padding: 8px 16px;
+  border-radius: 20px;
+  background: #f0f2f5;
+  cursor: pointer;
+  font-size: 12px;
+  transition:0.2s
+}.post-buttons button:hover{
+  background:#e4e6eb;
+}
+
+.post-buttons .liked {
+  background: #ff4d4d;
+  color: white;
+  border-color: #ff4d4d;
+}
+
+/* =======================
+   COMMENTS
+======================= */
+.comments {
+  display: flex;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.comments input {
+  flex: 1;
+  padding: 6px 12px;
+  border-radius: 20px;
+  border: 1px solid #ccc;
+}
+
+.comments button {
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: none;
+  background: #1877f2;
+  color: white;
+}
+
+/* =======================
+   MOBILE
+======================= */
+@media (max-width: 600px) {
+  .create-post {
+    flex-direction: column;
+  }
+
+  .profile-card {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .post-buttons {
+    flex-direction: column;
+  }
+}
+.suggest-scroll:hover {
+  animation-play-state: paused;
+}
