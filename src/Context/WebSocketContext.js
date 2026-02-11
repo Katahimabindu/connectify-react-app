@@ -9,7 +9,7 @@ export function WebSocketProvider({ children }) {
   const wsRef = useRef(null);
 
   useEffect(() => {
-    const ws = new WebSocket("ws://connectify-backend-ym5z.onrender.com");
+    const ws = new WebSocket("wss://connectify-backend-ym5z.onrender.com");
     wsRef.current = ws;
 
     ws.onopen = () => {
