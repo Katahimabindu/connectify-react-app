@@ -119,8 +119,9 @@ body {
 
 .post-content {
   font-size: 14px;
-  color: #333;
-  margin-bottom: 10px;
+  color: #222;
+  /* margin-bottom: 10px; */
+  font-weight: 600;
 }
 
 .post-buttons {
@@ -150,26 +151,26 @@ body {
 /* =======================
    COMMENTS
 ======================= */
-.comments {
-  display: flex;
-  gap: 6px;
-  margin-top: 6px;
+ .comments {
+
+  margin-top: 10px;
 }
 
-.comments input {
-  flex: 1;
-  padding: 6px 12px;
-  border-radius: 20px;
-  border: 1px solid #ccc;
+ .comment {
+  font-size: 13px;
+  line-height: 1.4;
+  font-weight: 400;
+  color: #333;
+  margin-bottom: 8px;
 }
 
-.comments button {
-  padding: 6px 14px;
-  border-radius: 20px;
-  border: none;
-  background: #1877f2;
-  color: white;
+.comment strong {
+  font-weight: 500;
+  margin-right: 6px;
+  color: #262626;
 }
+
+
 
 /* =======================
    MOBILE
