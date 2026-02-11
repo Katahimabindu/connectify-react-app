@@ -54,7 +54,8 @@ wss.on("connection", (ws) => {
         broadcast({ type: "UPDATE_POSTS", posts });
         break;
 
-      
+      // case "LIKE_POST":
+
       case "LIKE_POST": {
   const { id, user } = data;
 
