@@ -17,10 +17,12 @@ let following = [];
 // ------------------
 // HTTP SERVER
 // ------------------
-const server=http.createServer(app);
-server.listen(5000, () => {
-  console.log("🟢 HTTP server running on 5000");
+const PORT = process.env.PORT || 5000;
+
+server.listen(PORT, () => {
+  console.log(`🟢 HTTP server running on ${PORT}`);
 });
+
 
 // ------------------
 // WEBSOCKET SERVER
