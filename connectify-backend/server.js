@@ -54,14 +54,7 @@ wss.on("connection", (ws) => {
         broadcast({ type: "UPDATE_POSTS", posts });
         break;
 
-      // case "LIKE_POST":
-      //   posts = posts.map((p) => p.id === data.id
-      //       ? { ...p, likes: (p.likes || 0) + 1 }
-      //       : p
-      //   );
-      //   broadcast({ type: "UPDATE_POSTS", posts });
-      //   break;
-
+      
       case "LIKE_POST": {
   const { id, user } = data;
 

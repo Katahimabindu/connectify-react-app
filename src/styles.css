@@ -26,17 +26,6 @@
 }
 
 
-
-
-/* .suggest-scrol::-webkit-scrollbar{ */
-  /* height:6px; */
-/* } */
-/* .suggest-scrol::-webkit-scrollbar-thumb{ */
-  /* background:#ccc; */
-  /* border-radius:10px; */
-/* } */
-
-/* Suggested user card */
 .suggest-card {
   flex: 0 0 140px;          /* ✅ forces overflow on large screens */
   background: #fff;
@@ -56,8 +45,7 @@
 .suggest-name {
   font-size: 11px;
   font-weight: 600;
-  /* display: block; */
-  /* margin-bottom: 6px; */
+  
 }
 
 /* Follow button */
@@ -96,3 +84,12 @@
     color:#333
   }
 }
+.trending-badge {
+  background: linear-gradient(45deg, #ff512f, #f09819);
+  color: white;
+  font-size: 10px;
+  padding: 4px 8px;
+  border-radius: 12px;
+  margin-left: 8px;
+}
+

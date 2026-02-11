@@ -2,7 +2,9 @@ import { useState } from "react";
 import { useWebSocket } from "../Context/WebSocketContext";
 import LikeButton from "./LikeButton";
 
-function Post({ post }) {
+// function Post({ post }) {
+function Post({ post, isTrending }) {
+
   const { likePost, addComment, deletePost } = useWebSocket();
   const [comment, setComment] = useState("");
 
@@ -15,9 +17,12 @@ function Post({ post }) {
   return (
     <div className="post-card">
       <div className="post-header">
-        <h4>{post.name}</h4>
-        <button onClick={() => deletePost(post.id)}>🗑</button>
-      </div>
+  <h4>
+    {post.name}
+    {isTrending && <span className="trending-badge">🔥 Trending</span>}
+  </h4>
+  <button onClick={() => deletePost(post.id)}>🗑</button>
+</div>
 
       <p className="post-content">{post.content}</p>
 
