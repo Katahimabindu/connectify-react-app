@@ -1,4 +1,4 @@
-// WebSocketContext.js with loading spinner
+// WebSocketContext.js - Final version for deployment
 import { createContext, useContext, useEffect, useRef, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 
@@ -7,10 +7,11 @@ const WebSocketContext = createContext();
 export function WebSocketProvider({ children }) {
   const [posts, setPosts] = useState([]);
   const [following, setFollowing] = useState([]);
-  const [loading, setLoading] = useState(true); // Loading state for backend wakeup
+  const [loading, setLoading] = useState(true);
   const wsRef = useRef(null);
   const msgQueue = useRef([]);
 
+  // Ping backend to wake up before WebSocket
   const pingBackend = async () => {
     try {
       await fetch("https://connectify-backend-ym5z.onrender.com/ping");
@@ -20,7 +21,7 @@ export function WebSocketProvider({ children }) {
   };
 
   const initWebSocket = () => {
-    const ws = new WebSocket("wss://connectify-backend-ym5z.onrender.com/ws");
+    const ws = new WebSocket("wss://connectify-backend-ym5z.onrender.com/ws"); // <-- fixed path
     wsRef.current = ws;
 
     ws.onopen = () => {
@@ -28,7 +29,7 @@ export function WebSocketProvider({ children }) {
       // Send queued messages
       msgQueue.current.forEach((msg) => ws.send(JSON.stringify(msg)));
       msgQueue.current = [];
-      setLoading(false); // Backend is awake, hide spinner
+      setLoading(false);
     };
 
     ws.onmessage = (event) => {
@@ -38,7 +39,6 @@ export function WebSocketProvider({ children }) {
       if (data.type === "INIT_POSTS" || data.type === "UPDATE_POSTS") {
         setPosts(data.posts);
       }
-
       if (data.type === "FOLLOW_UPDATE") {
         setFollowing(data.following);
       }
@@ -73,12 +73,7 @@ export function WebSocketProvider({ children }) {
   // ACTIONS
   // ------------------
   const addPost = (content) => {
-    const post = {
-      id: Date.now(),
-      name: "Hima Bindu",
-      content,
-    };
-    console.log("📤 Sending post:", post);
+    const post = { id: Date.now(), name: "Hima Bindu", content };
     send({ type: "NEW_POST", post });
     toast.success("Post added");
   };
@@ -101,26 +96,18 @@ export function WebSocketProvider({ children }) {
     toast.success(`You followed ${user}`);
   };
 
+  // Loading spinner while backend wakes
   if (loading) {
     return (
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-        <div style={{
-          border: '8px solid #f3f3f3',
-          borderTop: '8px solid #3498db',
-          borderRadius: '50%',
-          width: '60px',
-          height: '60px',
-          animation: 'spin 1s linear infinite'
-        }} />
+        <div style={{ border: '8px solid #f3f3f3', borderTop: '8px solid #3498db', borderRadius: '50%', width: '60px', height: '60px', animation: 'spin 1s linear infinite' }} />
         <style>{`@keyframes spin {0% { transform: rotate(0deg);} 100% { transform: rotate(360deg);}}`}</style>
       </div>
     );
   }
 
   return (
-    <WebSocketContext.Provider
-      value={{ posts, following, addPost, likePost, addComment, deletePost, followUser }}
-    >
+    <WebSocketContext.Provider value={{ posts, following, addPost, likePost, addComment, deletePost, followUser }}>
       {children}
       <Toaster position="top-center" />
     </WebSocketContext.Provider>

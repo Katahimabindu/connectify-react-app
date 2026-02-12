@@ -1,4 +1,4 @@
-// server.js
+// server.js - Final version ready for deployment
 const express = require("express");
 const cors = require("cors");
 const WebSocket = require("ws");
@@ -27,7 +27,7 @@ app.get("/ping", (req, res) => {
 const PORT = process.env.PORT || 5000;
 const server = http.createServer(app);
 
-const wss = new WebSocket.Server({ server, path: "/ws" });
+const wss = new WebSocket.Server({ server, path: "/ws" }); // dedicated WS path
 
 wss.on("listening", () => {
   console.log("🟢 WebSocket server listening on /ws");
@@ -70,12 +70,7 @@ wss.on("connection", (ws) => {
 
     switch (data.type) {
       case "NEW_POST":
-        posts.unshift({
-          ...data.post,
-          likes: 0,
-          comments: [],
-          likedBy: [],
-        });
+        posts.unshift({ ...data.post, likes: 0, comments: [], likedBy: [] });
         broadcast({ type: "UPDATE_POSTS", posts });
         break;
 
@@ -85,17 +80,9 @@ wss.on("connection", (ws) => {
           if (p.id !== id) return p;
           const likedBy = p.likedBy || [];
           if (likedBy.includes(user)) {
-            return {
-              ...p,
-              likes: Math.max((p.likes || 1) - 1, 0),
-              likedBy: likedBy.filter((u) => u !== user),
-            };
+            return { ...p, likes: Math.max((p.likes || 1) - 1, 0), likedBy: likedBy.filter((u) => u !== user) };
           } else {
-            return {
-              ...p,
-              likes: (p.likes || 0) + 1,
-              likedBy: [...likedBy, user],
-            };
+            return { ...p, likes: (p.likes || 0) + 1, likedBy: [...likedBy, user] };
           }
         });
         broadcast({ type: "UPDATE_POSTS", posts });
@@ -105,13 +92,7 @@ wss.on("connection", (ws) => {
       case "ADD_COMMENT":
         posts = posts.map((p) =>
           p.id === data.id
-            ? {
-                ...p,
-                comments: [
-                  ...p.comments,
-                  { id: Date.now(), name: data.name, content: data.content },
-                ],
-              }
+            ? { ...p, comments: [...p.comments, { id: Date.now(), name: data.name, content: data.content }] }
             : p
         );
         broadcast({ type: "UPDATE_POSTS", posts });
@@ -123,9 +104,7 @@ wss.on("connection", (ws) => {
         break;
 
       case "FOLLOW_USER":
-        if (!following.includes(data.user)) {
-          following.push(data.user);
-        }
+        if (!following.includes(data.user)) following.push(data.user);
         broadcast({ type: "FOLLOW_UPDATE", following });
         break;
     }
