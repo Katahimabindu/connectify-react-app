@@ -1,8 +1,8 @@
-// console.log("this server is running")
+// server.js
 const express = require("express");
 const cors = require("cors");
 const WebSocket = require("ws");
-const http=require("http")
+const http = require("http");
 
 const app = express();
 app.use(cors());
@@ -15,24 +15,47 @@ let posts = [];
 let following = [];
 
 // ------------------
-// HTTP SERVER
+// PING ENDPOINT
+// ------------------
+app.get("/ping", (req, res) => {
+  res.status(200).json({ status: "awake" });
+});
+
+// ------------------
+// HTTP + WEBSOCKET SERVER
 // ------------------
 const PORT = process.env.PORT || 5000;
+const server = http.createServer(app);
+
+const wss = new WebSocket.Server({ server, path: "/ws" });
+
+wss.on("listening", () => {
+  console.log("🟢 WebSocket server listening on /ws");
+});
 
 server.listen(PORT, () => {
   console.log(`🟢 HTTP server running on ${PORT}`);
 });
 
+// ------------------
+// BROADCAST FUNCTION
+// ------------------
+function broadcast(msg) {
+  const data = JSON.stringify(msg);
+  wss.clients.forEach((client) => {
+    if (client.readyState === WebSocket.OPEN) {
+      try {
+        client.send(data);
+      } catch (err) {
+        console.error("Failed to send message to client", err);
+      }
+    }
+  });
+}
 
 // ------------------
-// WEBSOCKET SERVER
+// WEBSOCKET CONNECTION
 // ------------------
-const wss = new WebSocket.Server({ server });
-
-// wss.on("listening", () => {
-  console.log("🟢 WebSocket attached to http server");
-// });
-
 wss.on("connection", (ws) => {
   console.log("🔵 Client connected");
 
@@ -41,7 +64,7 @@ wss.on("connection", (ws) => {
   ws.send(JSON.stringify({ type: "FOLLOW_UPDATE", following }));
 
   ws.on("message", (msg) => {
-    console.log("RAW MESSAGE:",msg.toString());
+    console.log("RAW MESSAGE:", msg.toString());
     const data = JSON.parse(msg);
     console.log("📩 received:", data);
 
@@ -51,41 +74,33 @@ wss.on("connection", (ws) => {
           ...data.post,
           likes: 0,
           comments: [],
-          likedBy:[],
+          likedBy: [],
         });
         broadcast({ type: "UPDATE_POSTS", posts });
         break;
 
-      // case "LIKE_POST":
-
       case "LIKE_POST": {
-  const { id, user } = data;
-
-  posts = posts.map((p) => {
-    if (p.id !== id) return p;
-
-    const likedBy = p.likedBy || [];
-
-    if (likedBy.includes(user)) {
-      // UNLIKE
-      return {
-        ...p,
-        likes: Math.max((p.likes || 1) - 1, 0),
-        likedBy: likedBy.filter((u) => u !== user),
-      };
-    } else {
-      // LIKE
-      return {
-        ...p,
-        likes: (p.likes || 0) + 1,
-        likedBy: [...likedBy, user],
-      };
-    }
-  });
-
-  broadcast({ type: "UPDATE_POSTS", posts });
-  break;
-}
+        const { id, user } = data;
+        posts = posts.map((p) => {
+          if (p.id !== id) return p;
+          const likedBy = p.likedBy || [];
+          if (likedBy.includes(user)) {
+            return {
+              ...p,
+              likes: Math.max((p.likes || 1) - 1, 0),
+              likedBy: likedBy.filter((u) => u !== user),
+            };
+          } else {
+            return {
+              ...p,
+              likes: (p.likes || 0) + 1,
+              likedBy: [...likedBy, user],
+            };
+          }
+        });
+        broadcast({ type: "UPDATE_POSTS", posts });
+        break;
+      }
 
       case "ADD_COMMENT":
         posts = posts.map((p) =>
@@ -118,12 +133,3 @@ wss.on("connection", (ws) => {
 
   ws.on("close", () => console.log("🔴 Client disconnected"));
 });
-
-function broadcast(msg) {
-  const data = JSON.stringify(msg);
-  wss.clients.forEach((c) => {
-    if (c.readyState === WebSocket.OPEN) {
-      c.send(data);
-    }
-  });
-}
