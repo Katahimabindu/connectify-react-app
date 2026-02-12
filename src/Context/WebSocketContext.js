@@ -21,7 +21,7 @@ export function WebSocketProvider({ children }) {
   };
 
   const initWebSocket = () => {
-    const ws = new WebSocket("wss://connectify-backend-app-3ad8.onrender.com/ws"); // <-- fixed path
+    const ws = new WebSocket("wss://connectify-backend-app-3ad8.onrender.com"); // <-- fixed path
     wsRef.current = ws;
 
     ws.onopen = () => {
