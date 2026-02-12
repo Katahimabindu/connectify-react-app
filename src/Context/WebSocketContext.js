@@ -14,7 +14,7 @@ export function WebSocketProvider({ children }) {
   // Ping backend to wake up before WebSocket
   const pingBackend = async () => {
     try {
-      await fetch("https://connectify-backend-ym5z.onrender.com/ping");
+      await fetch("connectify-backend-app-3ad8.onrender.com/ping");
     } catch (err) {
       console.error("Backend ping failed", err);
     }
