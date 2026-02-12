@@ -1,5 +1,5 @@
 // WebSocketContext.js - Final version for deployment
-import { createContext, useContext, useEffect, useRef, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useState, useCallback } from "react";
 import toast, { Toaster } from "react-hot-toast";
 
 const WebSocketContext = createContext();
@@ -20,15 +20,20 @@ export function WebSocketProvider({ children }) {
     }
   };
 
-  const initWebSocket = () => {
-    const ws = new WebSocket("wss://connectify-backend-app-3ad8.onrender.com/ws"); // <-- fixed path
+  // ✅ Wrapped in useCallback (Fixes ESLint error)
+  const initWebSocket = useCallback(() => {
+    const ws = new WebSocket("wss://connectify-backend-app-3ad8.onrender.com/ws");
     wsRef.current = ws;
 
     ws.onopen = () => {
       console.log("✅ WS connected");
+
       // Send queued messages
-      msgQueue.current.forEach((msg) => ws.send(JSON.stringify(msg)));
+      msgQueue.current.forEach((msg) =>
+        ws.send(JSON.stringify(msg))
+      );
       msgQueue.current = [];
+
       setLoading(false);
     };
 
@@ -39,6 +44,7 @@ export function WebSocketProvider({ children }) {
       if (data.type === "INIT_POSTS" || data.type === "UPDATE_POSTS") {
         setPosts(data.posts);
       }
+
       if (data.type === "FOLLOW_UPDATE") {
         setFollowing(data.following);
       }
@@ -50,16 +56,20 @@ export function WebSocketProvider({ children }) {
       console.log("❌ WS closed, retrying in 5s");
       setTimeout(() => initWebSocket(), 5000);
     };
-  };
+  }, []);
 
   useEffect(() => {
     const wakeBackend = async () => {
       await pingBackend();
       initWebSocket();
     };
+
     wakeBackend();
-    return () => wsRef.current?.close();
-  }, []);
+
+    return () => {
+      wsRef.current?.close();
+    };
+  }, [initWebSocket]); // ✅ Dependency added properly
 
   const send = (msg) => {
     if (wsRef.current?.readyState === WebSocket.OPEN) {
@@ -72,6 +82,7 @@ export function WebSocketProvider({ children }) {
   // ------------------
   // ACTIONS
   // ------------------
+
   const addPost = (content) => {
     const post = { id: Date.now(), name: "Hima Bindu", content };
     send({ type: "NEW_POST", post });
@@ -100,14 +111,30 @@ export function WebSocketProvider({ children }) {
   if (loading) {
     return (
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-        <div style={{ border: '8px solid #f3f3f3', borderTop: '8px solid #3498db', borderRadius: '50%', width: '60px', height: '60px', animation: 'spin 1s linear infinite' }} />
-        <style>{`@keyframes spin {0% { transform: rotate(0deg);} 100% { transform: rotate(360deg);}}`}</style>
+        <div
+          style={{
+            border: '8px solid #f3f3f3',
+            borderTop: '8px solid #3498db',
+            borderRadius: '50%',
+            width: '60px',
+            height: '60px',
+            animation: 'spin 1s linear infinite'
+          }}
+        />
+        <style>{`
+          @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+          }
+        `}</style>
       </div>
     );
   }
 
   return (
-    <WebSocketContext.Provider value={{ posts, following, addPost, likePost, addComment, deletePost, followUser }}>
+    <WebSocketContext.Provider
+      value={{ posts, following, addPost, likePost, addComment, deletePost, followUser }}
+    >
       {children}
       <Toaster position="top-center" />
     </WebSocketContext.Provider>
