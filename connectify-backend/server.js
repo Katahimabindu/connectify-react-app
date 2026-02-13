@@ -1,4 +1,4 @@
-// server.js - Final version ready for deployment
+
 const express = require("express");
 const cors = require("cors");
 const WebSocket = require("ws");
@@ -7,27 +7,19 @@ const http = require("http");
 const app = express();
 app.use(cors());
 app.use(express.json());
-
-// ------------------
-// DATA STORE
-// ------------------
 let posts = [];
 let following = [];
 
-// ------------------
-// PING ENDPOINT
-// ------------------
+
 app.get("/ping", (req, res) => {
   res.status(200).json({ status: "awake" });
 });
 
-// ------------------
-// HTTP + WEBSOCKET SERVER
-// ------------------
+
 const PORT = process.env.PORT || 5000;
 const server = http.createServer(app);
 
-const wss = new WebSocket.Server({ server, path: "/ws" }); // dedicated WS path
+const wss = new WebSocket.Server({ server, path: "/ws" }); 
 
 wss.on("listening", () => {
   console.log("🟢 WebSocket server listening on /ws");
@@ -37,9 +29,6 @@ server.listen(PORT, () => {
   console.log(`🟢 HTTP server running on ${PORT}`);
 });
 
-// ------------------
-// BROADCAST FUNCTION
-// ------------------
 function broadcast(msg) {
   const data = JSON.stringify(msg);
   wss.clients.forEach((client) => {
@@ -53,9 +42,7 @@ function broadcast(msg) {
   });
 }
 
-// ------------------
-// WEBSOCKET CONNECTION
-// ------------------
+
 wss.on("connection", (ws) => {
   console.log("🔵 Client connected");
 

@@ -1,4 +1,4 @@
-// WebSocketContext.js - Final version for deployment
+
 import { createContext, useContext, useEffect, useRef, useState, useCallback } from "react";
 import toast, { Toaster } from "react-hot-toast";
 
@@ -11,7 +11,7 @@ export function WebSocketProvider({ children }) {
   const wsRef = useRef(null);
   const msgQueue = useRef([]);
 
-  // Ping backend to wake up before WebSocket
+  
   const pingBackend = async () => {
     try {
       await fetch("https://connectify-backend-app-3ad8.onrender.com/ping");
@@ -20,7 +20,7 @@ export function WebSocketProvider({ children }) {
     }
   };
 
-  // ✅ Wrapped in useCallback (Fixes ESLint error)
+  
   const initWebSocket = useCallback(() => {
     const ws = new WebSocket("wss://connectify-backend-app-3ad8.onrender.com/ws");
     wsRef.current = ws;
@@ -28,7 +28,7 @@ export function WebSocketProvider({ children }) {
     ws.onopen = () => {
       console.log("✅ WS connected");
 
-      // Send queued messages
+      
       msgQueue.current.forEach((msg) =>
         ws.send(JSON.stringify(msg))
       );
@@ -69,7 +69,7 @@ export function WebSocketProvider({ children }) {
     return () => {
       wsRef.current?.close();
     };
-  }, [initWebSocket]); // ✅ Dependency added properly
+  }, [initWebSocket]); 
 
   const send = (msg) => {
     if (wsRef.current?.readyState === WebSocket.OPEN) {
@@ -79,9 +79,7 @@ export function WebSocketProvider({ children }) {
     }
   };
 
-  // ------------------
-  // ACTIONS
-  // ------------------
+
 
   const addPost = (content) => {
     const post = { id: Date.now(), name: "Hima Bindu", content };
@@ -107,7 +105,7 @@ export function WebSocketProvider({ children }) {
     toast.success(`You followed ${user}`);
   };
 
-  // Loading spinner while backend wakes
+  
   if (loading) {
     return (
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
